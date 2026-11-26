@@ -348,9 +348,13 @@ func TestIndentOutdent(t *testing.T) {
 
 func TestActionsIgnoredInSidebarAndFocus(t *testing.T) {
 	f, ids := newFixture(t)
-	f.keys("a", "d", "space")
+	f.keys("a", "space")
 	if f.m.mode != modeNormal || f.saves != 0 {
 		t.Fatal("sidebar must not run task actions")
+	}
+	f.keys("d", "n") // sidebar d is list delete; declined
+	if f.saves != 0 || len(f.m.store.Lists) != 4 {
+		t.Fatal("declined list delete mutated")
 	}
 	f.keys("up", "tab", "a", "d")
 	if f.m.mode != modeNormal || f.saves != 0 || f.m.store.List(ids["work"]) == nil {

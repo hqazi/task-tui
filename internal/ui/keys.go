@@ -21,6 +21,10 @@ type keyMap struct {
 	Today, HideDone       key.Binding
 	ClearDone, Back       key.Binding
 
+	// List management (sidebar).
+	ListAdd, ListRename, ListDelete key.Binding
+	ListUp, ListDown, ListHide      key.Binding
+
 	// Shown in the hint bar while an input or confirm is open.
 	Submit, Cancel, Yes, No key.Binding
 }
@@ -52,6 +56,13 @@ func newKeyMap() keyMap {
 		HideDone:  key.NewBinding(key.WithKeys("h"), key.WithHelp("h", "hide done")),
 		ClearDone: key.NewBinding(key.WithKeys("C"), key.WithHelp("C", "clear done")),
 		Back:      key.NewBinding(key.WithKeys("esc"), key.WithHelp("esc", "sidebar")),
+
+		ListAdd:    key.NewBinding(key.WithKeys("n"), key.WithHelp("n", "new list")),
+		ListRename: key.NewBinding(key.WithKeys("r"), key.WithHelp("r", "rename list")),
+		ListDelete: key.NewBinding(key.WithKeys("d"), key.WithHelp("d", "delete list")),
+		ListUp:     key.NewBinding(key.WithKeys("shift+up"), key.WithHelp("shift+↑", "list up")),
+		ListDown:   key.NewBinding(key.WithKeys("shift+down"), key.WithHelp("shift+↓", "list down")),
+		ListHide:   key.NewBinding(key.WithKeys("v"), key.WithHelp("v", "hide/show list")),
 
 		Submit: key.NewBinding(key.WithKeys("enter"), key.WithHelp("enter", "save")),
 		Cancel: key.NewBinding(key.WithKeys("esc"), key.WithHelp("esc", "cancel")),

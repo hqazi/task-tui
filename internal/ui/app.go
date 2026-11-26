@@ -159,7 +159,7 @@ func (m Model) updateSidebar(msg tea.KeyMsg) Model {
 		}
 		return m.updateSidebarKey("toggle", items, idx)
 	}
-	return m
+	return m.updateListAction(msg, items, idx)
 }
 
 func (m Model) updateTasks(msg tea.KeyMsg) Model {
