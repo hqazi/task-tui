@@ -24,6 +24,9 @@ type keyMap struct {
 	// Focus view.
 	Jump, Unstar, FocusEdit key.Binding
 
+	// Move picker and search.
+	Move, Search key.Binding
+
 	// List management (sidebar).
 	ListAdd, ListRename, ListDelete key.Binding
 	ListUp, ListDown, ListHide      key.Binding
@@ -63,6 +66,9 @@ func newKeyMap() keyMap {
 		Jump:      key.NewBinding(key.WithKeys("enter", "g"), key.WithHelp("enter/g", "jump to list")),
 		Unstar:    key.NewBinding(key.WithKeys("t"), key.WithHelp("t", "unstar")),
 		FocusEdit: key.NewBinding(key.WithKeys("e"), key.WithHelp("e", "edit")),
+
+		Move:   key.NewBinding(key.WithKeys("m"), key.WithHelp("m", "move to list")),
+		Search: key.NewBinding(key.WithKeys("/"), key.WithHelp("/", "search")),
 
 		ListAdd:    key.NewBinding(key.WithKeys("n"), key.WithHelp("n", "new list")),
 		ListRename: key.NewBinding(key.WithKeys("r"), key.WithHelp("r", "rename list")),

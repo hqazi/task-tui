@@ -24,6 +24,8 @@ const (
 	modeHelp
 	modeInput   // inline text input, see input.go
 	modeConfirm // y/n modal, see confirm.go
+	modePicker  // move-to-list popup, see picker.go
+	modeSearch  // live search, see search.go
 )
 
 type pane int
@@ -69,6 +71,8 @@ type Model struct {
 
 	input   inputState   // valid in modeInput
 	confirm confirmState // valid in modeConfirm
+	picker  pickerState  // valid in modePicker
+	search  searchState  // valid in modeSearch
 }
 
 // New creates the root model. A nil save function disables persistence.
@@ -125,6 +129,11 @@ func (m Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return nm.settle(), cmd
 	case modeConfirm:
 		m = m.updateConfirm(msg)
+	case modePicker:
+		m = m.updatePicker(msg)
+	case modeSearch:
+		nm, cmd := m.updateSearch(msg)
+		return nm.settle(), cmd
 	default:
 		switch {
 		case key.Matches(msg, m.keys.Help):
@@ -188,6 +197,8 @@ func (m Model) updateTasks(msg tea.KeyMsg) Model {
 	case key.Matches(msg, k.Back):
 		m.pane = paneSidebar
 		return m
+	case key.Matches(msg, k.Search):
+		return m.startSearch()
 	}
 	return m.updateTaskAction(msg)
 }
@@ -247,6 +258,13 @@ func (m Model) View() string {
 		return m.renderHelp()
 	case modeConfirm:
 		return m.renderConfirm()
+	case modePicker:
+		return m.renderPicker()
+	case modeSearch:
+		if m.h >= 3 {
+			return m.renderSearch()
+		}
+		return m.renderSearchBar()
 	}
 	if m.h < 3 { // no room for a bordered pane
 		return m.renderHintBar()

@@ -43,6 +43,8 @@ func (m Model) updateTaskAction(msg tea.KeyMsg) Model {
 	}
 	id := t.ID
 	switch {
+	case key.Matches(msg, k.Move):
+		return m.startPicker(id, false)
 	case key.Matches(msg, k.Edit):
 		return m.startEdit(t)
 	case key.Matches(msg, k.Toggle):

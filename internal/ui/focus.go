@@ -36,6 +36,9 @@ func (m Model) updateFocus(msg tea.KeyMsg) Model {
 		m.pane = paneSidebar
 		return m
 	}
+	if key.Matches(msg, k.Search) {
+		return m.startSearch()
+	}
 	es := m.store.FocusTasks(m.now())
 	idx := m.focusIndex(es)
 	if idx < 0 {
@@ -75,6 +78,8 @@ func (m Model) updateFocus(msg tea.KeyMsg) Model {
 		m.save()
 	case key.Matches(msg, k.FocusEdit):
 		return m.startEdit(t)
+	case key.Matches(msg, k.Move):
+		return m.startPicker(id, true)
 	case key.Matches(msg, k.Jump):
 		return m.jumpTo(id)
 	case key.Matches(msg, k.Delete):
