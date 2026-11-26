@@ -106,6 +106,6 @@ Sketch:
 ## 9. Out of scope for v1
 Undo/redo, multiple themes, mouse support, configurable keybindings, due dates, priority levels, sync, and cut & paste moves.
 
-## 10. Open questions
-1. Should starred tasks in **hidden** lists still appear in Focus? The proposed answer is yes.
-2. Should `m` (move) also work from Focus? The proposed answer is yes, using the same picker.
+## 10. Decisions on earlier open questions
+1. Starred tasks in **hidden** lists still appear in Focus.
+2. `m` (move) also works from Focus, using the same picker.
