@@ -1,5 +1,4 @@
-// Command task-tui is a terminal task manager. The UI arrives in a later task;
-// for now main loads the store and prints a summary.
+// Command task-tui is a terminal task manager.
 package main
 
 import (
@@ -7,7 +6,10 @@ import (
 	"fmt"
 	"os"
 
+	tea "github.com/charmbracelet/bubbletea"
+
 	"github.com/hqazi/task-tui/internal/store"
+	"github.com/hqazi/task-tui/internal/ui"
 )
 
 func main() {
@@ -18,15 +20,20 @@ func main() {
 	if path == "" {
 		p, err := store.DefaultPath()
 		if err != nil {
-			fmt.Fprintln(os.Stderr, "task-tui:", err)
-			os.Exit(1)
+			fatal(err)
 		}
 		path = p
 	}
 	s, err := store.Load(path)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "task-tui:", err)
-		os.Exit(1)
+		fatal(err)
 	}
-	fmt.Printf("%d lists\n", len(s.Lists))
+	if _, err := tea.NewProgram(ui.New(s, path, store.Save), tea.WithAltScreen()).Run(); err != nil {
+		fatal(err)
+	}
+}
+
+func fatal(err error) {
+	fmt.Fprintln(os.Stderr, "task-tui:", err)
+	os.Exit(1)
 }
