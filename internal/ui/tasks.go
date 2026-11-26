@@ -122,7 +122,7 @@ func (m Model) renderTasks(w, h int) string {
 	var lines []string
 	switch it := m.selectedItem(); it.kind {
 	case itemFocus:
-		lines = append(lines, title.Render(" Focus"), "", m.theme.muted.Render(" Focus — coming soon"))
+		lines = m.renderFocus(title, inner, h, active)
 	case itemHiddenToggle:
 		lines = append(lines, title.Render(" Hidden"), "", m.theme.muted.Render(" Select a hidden list (→ to expand)"))
 	default:

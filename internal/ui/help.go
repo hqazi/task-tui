@@ -18,6 +18,8 @@ func (m Model) hintBindings() []key.Binding {
 		return []key.Binding{k.Yes, k.No}
 	case m.pane == paneSidebar:
 		return []key.Binding{k.Up, k.Tab, k.ListAdd, k.ListRename, k.ListDelete, k.ListUp, k.ListHide, k.Help, k.Quit}
+	case m.inFocus():
+		return []key.Binding{k.Up, k.MoveUp, k.Toggle, k.FocusEdit, k.Unstar, k.Delete, k.Jump, k.Back, k.Help, k.Quit}
 	default:
 		return []key.Binding{k.Add, k.AddChild, k.Edit, k.Toggle, k.Today, k.Delete, k.Indent, k.Back, k.Help, k.Quit}
 	}
@@ -30,6 +32,7 @@ func (m Model) helpGroups() []helpGroup {
 		{"Navigation", []key.Binding{k.Up, k.Tab, k.Back}},
 		{"Tasks", []key.Binding{k.Add, k.AddEnd, k.AddChild, k.Edit, k.Toggle, k.Delete, k.Today, k.HideDone, k.ClearDone}},
 		{"Organise", []key.Binding{k.MoveUp, k.MoveDown, k.Indent, k.Outdent, k.Left, k.Right, k.CollapseAll, k.ExpandAll}},
+		{"Focus", []key.Binding{k.Jump, k.Unstar, k.MoveUp, k.MoveDown, k.Toggle, k.FocusEdit, k.Delete}},
 		{"Sidebar", []key.Binding{k.Select, k.ListAdd, k.ListRename, k.ListDelete, k.ListUp, k.ListDown, k.ListHide}},
 		{"General", []key.Binding{k.Help, k.Quit}},
 	}

@@ -285,15 +285,15 @@ func TestSelectionSurvivesMutation(t *testing.T) {
 	}
 }
 
-func TestFocusPlaceholderAndHelp(t *testing.T) {
+func TestFocusEmptyStateAndHelp(t *testing.T) {
 	f, _ := newFixture(t)
 	f.keys("up", "tab")
 	if f.m.selectedTask() != nil {
 		t.Fatal("focus has no task rows yet")
 	}
 	f.keys("down", "-", "+") // must not panic
-	if !strings.Contains(f.m.View(), "coming soon") {
-		t.Fatal("placeholder missing")
+	if !strings.Contains(f.m.View(), "No tasks for today") {
+		t.Fatal("empty state missing")
 	}
 	f.keys("?")
 	if f.m.mode != modeHelp || !strings.Contains(f.m.View(), "Keys") {

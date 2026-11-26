@@ -21,6 +21,9 @@ type keyMap struct {
 	Today, HideDone       key.Binding
 	ClearDone, Back       key.Binding
 
+	// Focus view.
+	Jump, Unstar, FocusEdit key.Binding
+
 	// List management (sidebar).
 	ListAdd, ListRename, ListDelete key.Binding
 	ListUp, ListDown, ListHide      key.Binding
@@ -56,6 +59,10 @@ func newKeyMap() keyMap {
 		HideDone:  key.NewBinding(key.WithKeys("h"), key.WithHelp("h", "hide done")),
 		ClearDone: key.NewBinding(key.WithKeys("C"), key.WithHelp("C", "clear done")),
 		Back:      key.NewBinding(key.WithKeys("esc"), key.WithHelp("esc", "sidebar")),
+
+		Jump:      key.NewBinding(key.WithKeys("enter", "g"), key.WithHelp("enter/g", "jump to list")),
+		Unstar:    key.NewBinding(key.WithKeys("t"), key.WithHelp("t", "unstar")),
+		FocusEdit: key.NewBinding(key.WithKeys("e"), key.WithHelp("e", "edit")),
 
 		ListAdd:    key.NewBinding(key.WithKeys("n"), key.WithHelp("n", "new list")),
 		ListRename: key.NewBinding(key.WithKeys("r"), key.WithHelp("r", "rename list")),

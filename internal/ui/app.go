@@ -62,6 +62,11 @@ type Model struct {
 	taskOff  int
 	hideDone map[string]bool // per list ID; UI state only, not persisted
 
+	// Focus view state. Selection is by task ID, like the task pane.
+	focusSel  string
+	focusLast int
+	focusOff  int
+
 	input   inputState   // valid in modeInput
 	confirm confirmState // valid in modeConfirm
 }
@@ -163,6 +168,9 @@ func (m Model) updateSidebar(msg tea.KeyMsg) Model {
 }
 
 func (m Model) updateTasks(msg tea.KeyMsg) Model {
+	if m.inFocus() {
+		return m.updateFocus(msg)
+	}
 	k := m.keys
 	switch {
 	case key.Matches(msg, k.Up):
@@ -206,6 +214,15 @@ func (m Model) settle() Model {
 		m.taskOff = scrollTo(m.taskOff, ti, n, len(rows))
 	} else {
 		m.taskSel, m.taskLast, m.taskOff = "", 0, 0
+	}
+
+	es := m.store.FocusTasks(m.now())
+	if fi := m.focusIndex(es); fi >= 0 {
+		m.focusSel = es[fi].Task.ID
+		m.focusLast = fi
+		m.focusOff = scrollTo(m.focusOff, fi, n, len(es))
+	} else {
+		m.focusSel, m.focusLast, m.focusOff = "", 0, 0
 	}
 	return m
 }
