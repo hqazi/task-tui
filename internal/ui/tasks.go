@@ -23,7 +23,7 @@ func (m Model) currentList() *model.List {
 // rows returns the visible task rows of the current list.
 func (m Model) rows() []model.Row {
 	if l := m.currentList(); l != nil {
-		return model.Flatten(l, m.hideDone)
+		return model.Flatten(l, m.hideDone[l.ID])
 	}
 	return nil
 }
@@ -129,14 +129,37 @@ func (m Model) renderTasks(w, h int) string {
 		lines = append(lines, title.Render(ansi.Truncate(" "+it.label, inner, m.theme.icons.Ellipsis)))
 		rows := m.rows()
 		if len(rows) == 0 {
-			lines = append(lines, "", m.theme.muted.Render(" No tasks"))
+			if m.mode == modeInput && m.input.at.inline {
+				lines = append(lines, m.renderInputRow(m.newRowPrefix(0), inner))
+			} else {
+				lines = append(lines, "", m.theme.muted.Render(" No tasks"))
+			}
 			break
 		}
 		sel := m.taskIndex(rows)
 		n := m.bodyRows(h)
-		for i := m.taskOff; i < len(rows) && i < m.taskOff+n; i++ {
-			lines = append(lines, m.renderTaskRow(rows[i], i == sel && active, i == sel, inner))
+		var body []string
+		focus := sel
+		for i, r := range rows {
+			if m.mode == modeInput && m.input.at.inline && m.input.at.editID == r.Task.ID {
+				focus = len(body)
+				body = append(body, m.renderInputRow(m.rowPrefix(r.Task, r.Depth), inner))
+				continue
+			}
+			if i == sel {
+				focus = len(body)
+			}
+			body = append(body, m.renderTaskRow(r, i == sel && active, i == sel, inner))
+			if m.insertInputAfter(rows, i) {
+				focus = len(body)
+				body = append(body, m.renderInputRow(m.newRowPrefix(m.input.at.depth), inner))
+			}
 		}
+		off := scrollTo(m.taskOff, focus, n, len(body))
+		if m.mode != modeInput {
+			off = m.taskOff
+		}
+		lines = append(lines, body[min(off, len(body)):min(off+n, len(body))]...)
 	}
 	return box.Width(inner).Height(max(h-2, 1)).MaxHeight(h).Render(strings.Join(lines, "\n"))
 }
@@ -158,18 +181,7 @@ func (m Model) renderTaskRow(r model.Row, highlight, cursor bool, w int) string 
 		}
 	}
 
-	arrow := " "
-	if len(t.Children) > 0 {
-		arrow = th.icons.Expanded
-		if t.Collapsed {
-			arrow = th.icons.Collapsed
-		}
-	}
-	icon := th.icons.Open
-	if t.Done {
-		icon = th.icons.Done
-	}
-	prefix := " " + strings.Repeat("  ", r.Depth) + arrow + " " + icon + " "
+	prefix := m.rowPrefix(t, r.Depth)
 
 	var suffix string
 	if d, tot := model.Progress(t); tot > 0 {
@@ -211,4 +223,49 @@ func btoi(b bool) int {
 		return 1
 	}
 	return 0
+}
+
+// rowPrefix is the indent, arrow and icon drawn before a task's text.
+func (m Model) rowPrefix(t *model.Task, depth int) string {
+	th := m.theme
+	arrow := " "
+	if len(t.Children) > 0 {
+		arrow = th.icons.Expanded
+		if t.Collapsed {
+			arrow = th.icons.Collapsed
+		}
+	}
+	icon := th.icons.Open
+	if t.Done {
+		icon = th.icons.Done
+	}
+	return " " + strings.Repeat("  ", depth) + arrow + " " + icon + " "
+}
+
+// newRowPrefix is the prefix of the not-yet-created row of an add input.
+func (m Model) newRowPrefix(depth int) string {
+	return " " + strings.Repeat("  ", depth) + "  " + m.theme.icons.Open + " "
+}
+
+// insertInputAfter reports whether the add input's new row goes right after
+// rows[i], i.e. after the end of the visible subtree of the input's anchor.
+func (m Model) insertInputAfter(rows []model.Row, i int) bool {
+	at := m.input.at
+	if m.mode != modeInput || !at.inline || at.editID != "" {
+		return false
+	}
+	if at.afterID == "" {
+		return i == len(rows)-1
+	}
+	for j, r := range rows {
+		if r.Task.ID != at.afterID {
+			continue
+		}
+		end := j
+		for end+1 < len(rows) && rows[end+1].Depth > r.Depth {
+			end++
+		}
+		return i == end
+	}
+	return i == len(rows)-1
 }

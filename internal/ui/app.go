@@ -22,6 +22,8 @@ type mode int
 const (
 	modeNormal mode = iota
 	modeHelp
+	modeInput   // inline text input, see input.go
+	modeConfirm // y/n modal, see confirm.go
 )
 
 type pane int
@@ -58,7 +60,10 @@ type Model struct {
 	taskSel  string
 	taskLast int // last known row index, fallback if taskSel vanishes
 	taskOff  int
-	hideDone bool
+	hideDone map[string]bool // per list ID; UI state only, not persisted
+
+	input   inputState   // valid in modeInput
+	confirm confirmState // valid in modeConfirm
 }
 
 // New creates the root model. A nil save function disables persistence.
@@ -67,7 +72,8 @@ func New(s *model.Store, path string, save SaveFunc) Model {
 		store: s, path: path, saver: save, now: time.Now,
 		keys: newKeyMap(), theme: newTheme(asciiFromEnv()),
 		w: 80, h: 24,
-		sideSel: keyFocus,
+		hideDone: map[string]bool{},
+		sideSel:  keyFocus,
 	}
 	for _, l := range s.Lists {
 		if !l.Hidden {
@@ -109,12 +115,17 @@ func (m Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	switch m.mode {
 	case modeHelp:
 		m.mode = modeNormal
+	case modeInput:
+		nm, cmd := m.updateInput(msg)
+		return nm.settle(), cmd
+	case modeConfirm:
+		m = m.updateConfirm(msg)
 	default:
 		switch {
 		case key.Matches(msg, m.keys.Help):
 			m.mode = modeHelp
-		case key.Matches(msg, m.keys.Tab):
-			m.pane = 1 - m.pane
+		case m.pane == paneSidebar && key.Matches(msg, m.keys.Tab):
+			m.pane = paneTasks
 		case m.pane == paneSidebar:
 			m = m.updateSidebar(msg)
 		default:
@@ -136,8 +147,16 @@ func (m Model) updateSidebar(msg tea.KeyMsg) Model {
 	case key.Matches(msg, k.Left):
 		return m.updateSidebarKey("left", items, idx)
 	case key.Matches(msg, k.Right):
+		if idx >= 0 && items[idx].kind != itemHiddenToggle {
+			m.pane = paneTasks
+			return m
+		}
 		return m.updateSidebarKey("right", items, idx)
 	case key.Matches(msg, k.Select):
+		if idx >= 0 && items[idx].kind != itemHiddenToggle {
+			m.pane = paneTasks
+			return m
+		}
 		return m.updateSidebarKey("toggle", items, idx)
 	}
 	return m
@@ -158,8 +177,11 @@ func (m Model) updateTasks(msg tea.KeyMsg) Model {
 		return m.updateTasksKey("collapseAll")
 	case key.Matches(msg, k.ExpandAll):
 		return m.updateTasksKey("expandAll")
+	case key.Matches(msg, k.Back):
+		m.pane = paneSidebar
+		return m
 	}
-	return m
+	return m.updateTaskAction(msg)
 }
 
 // bodyRows is the number of item rows that fit in a pane of outer height h
@@ -203,8 +225,11 @@ func (m Model) View() string {
 	if m.w < 1 || m.h < 1 {
 		return ""
 	}
-	if m.mode == modeHelp {
+	switch m.mode {
+	case modeHelp:
 		return m.renderHelp()
+	case modeConfirm:
+		return m.renderConfirm()
 	}
 	if m.h < 3 { // no room for a bordered pane
 		return m.renderHintBar()

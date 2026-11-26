@@ -29,7 +29,7 @@ A good-looking terminal task manager built around lists, nested tasks, and a dai
 - **Left sidebar** has Focus pinned at the top, then the user's lists. Each list shows its count of open tasks.
 - **Right pane** shows the tasks of the selected list, or of Focus.
 - **Bottom hint bar** shows context-sensitive key hints, and `?` opens a full help overlay.
-- **Tab** switches focus between the sidebar and the task pane.
+- **Focus switching:** from the sidebar, `Tab`, `→` or `Enter` moves to the task pane. In the task pane `Tab` / `Shift+Tab` indent / outdent the task (see §5), so `Esc` returns focus to the sidebar.
 - The layout adapts to the terminal size, and long task text wraps or truncates cleanly.
 
 ## 4. Lists
@@ -49,12 +49,12 @@ A good-looking terminal task manager built around lists, nested tasks, and a dai
 | Toggle complete | `Space` | |
 | Delete | `d` | Deletes immediately for a task with no subtasks, and asks y/n for a task that has subtasks. |
 | Reorder | `Shift+↑/↓` | Moves the task, with its subtree, among its siblings. |
-| Indent / outdent | `Tab` / `Shift+Tab` | Makes the task a child of the sibling above it, or of its grandparent. |
+| Indent / outdent | `Tab` / `Shift+Tab` | In the task pane only (`Esc` returns to the sidebar). Makes the task a child of the sibling above it, or of its grandparent. |
 | Collapse / expand | `←` / `→` | `←` on a child jumps to its parent. |
 | Collapse all / expand all | `-` / `+` | |
 | Move to another list | `m` | Opens a picker popup of lists. The task moves with its subtree and is appended at the bottom of the target list. |
 | Star for Today | `t` | Toggle. |
-| Hide/show done tasks | `h` | Per-view toggle. |
+| Hide/show done tasks | `h` | Per-list toggle (UI state, not saved). |
 | Clear done tasks | `C` | Asks y/n, then removes the done tasks in the current list. |
 | Search/filter | `/` | Fuzzy filter. `Tab` inside search switches between this list and all lists. `Esc` clears the filter. |
 

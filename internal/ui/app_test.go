@@ -79,6 +79,16 @@ func (f *fixture) keys(names ...string) {
 			km = tea.KeyMsg{Type: tea.KeyRight}
 		case "tab":
 			km = tea.KeyMsg{Type: tea.KeyTab}
+		case "shift+tab":
+			km = tea.KeyMsg{Type: tea.KeyShiftTab}
+		case "shift+up":
+			km = tea.KeyMsg{Type: tea.KeyShiftUp}
+		case "shift+down":
+			km = tea.KeyMsg{Type: tea.KeyShiftDown}
+		case "esc":
+			km = tea.KeyMsg{Type: tea.KeyEsc}
+		case "space":
+			km = tea.KeyMsg{Type: tea.KeySpace, Runes: []rune(" ")}
 		case "enter":
 			km = tea.KeyMsg{Type: tea.KeyEnter}
 		default:
@@ -176,9 +186,17 @@ func TestPaneSwitch(t *testing.T) {
 	if f.m.pane != paneTasks {
 		t.Fatal("tab should focus tasks")
 	}
-	f.keys("tab")
+	f.keys("esc")
 	if f.m.pane != paneSidebar {
-		t.Fatal("tab should return to sidebar")
+		t.Fatal("esc should return to sidebar")
+	}
+	f.keys("right")
+	if f.m.pane != paneTasks {
+		t.Fatal("right should focus tasks")
+	}
+	f.keys("esc", "enter")
+	if f.m.pane != paneTasks {
+		t.Fatal("enter should focus tasks")
 	}
 }
 

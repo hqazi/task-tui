@@ -12,10 +12,14 @@ import (
 func (m Model) hintBindings() []key.Binding {
 	k := m.keys
 	switch {
+	case m.mode == modeInput:
+		return []key.Binding{k.Submit, k.Cancel}
+	case m.mode == modeConfirm:
+		return []key.Binding{k.Yes, k.No}
 	case m.pane == paneSidebar:
 		return []key.Binding{k.Up, k.Tab, k.Left, k.Right, k.Help, k.Quit}
 	default:
-		return []key.Binding{k.Up, k.Tab, k.Left, k.Right, k.CollapseAll, k.ExpandAll, k.Help, k.Quit}
+		return []key.Binding{k.Add, k.AddChild, k.Edit, k.Toggle, k.Today, k.Delete, k.Indent, k.Back, k.Help, k.Quit}
 	}
 }
 
@@ -23,8 +27,9 @@ func (m Model) hintBindings() []key.Binding {
 func (m Model) helpGroups() []helpGroup {
 	k := m.keys
 	return []helpGroup{
-		{"Navigation", []key.Binding{k.Up, k.Tab}},
-		{"Tasks", []key.Binding{k.Left, k.Right, k.CollapseAll, k.ExpandAll}},
+		{"Navigation", []key.Binding{k.Up, k.Tab, k.Back}},
+		{"Tasks", []key.Binding{k.Add, k.AddEnd, k.AddChild, k.Edit, k.Toggle, k.Delete, k.Today, k.HideDone, k.ClearDone}},
+		{"Organise", []key.Binding{k.MoveUp, k.MoveDown, k.Indent, k.Outdent, k.Left, k.Right, k.CollapseAll, k.ExpandAll}},
 		{"Sidebar", []key.Binding{k.Select}},
 		{"General", []key.Binding{k.Help, k.Quit}},
 	}
@@ -36,6 +41,9 @@ type helpGroup struct {
 }
 
 func (m Model) renderHintBar() string {
+	if m.mode == modeInput && !m.input.at.inline {
+		return m.renderInputBar()
+	}
 	if m.status != "" {
 		return m.theme.err.Render(ansi.Truncate(" "+m.status, m.w, "…"))
 	}
