@@ -67,7 +67,7 @@ func (m Model) searchHits() []hit {
 			if fuzzyMatch(q, t.Text) {
 				h := hit{Task: t}
 				if m.search.allLists {
-					h.Crumb = strings.Join(crumb, " › ")
+					h.Crumb = strings.Join(crumb, " "+m.theme.icons.Sep+" ")
 				}
 				out = append(out, h)
 			}
@@ -141,13 +141,13 @@ func (m Model) renderSearch() string {
 	hits := m.searchHits()
 	sel := min(max(m.search.sel, 0), max(len(hits)-1, 0))
 	bodyH := max(m.h-1, 1)
-	w := min(max(m.w-4, 10), 80)
-	n := max(min(bodyH-6, 15), 1)
+	w := min(max(m.w-8, 10), 80)
+	n := max(min(bodyH-8, 15), 1)
 	off := scrollTo(m.search.off, sel, n, len(hits))
 
 	var lines []string
 	if len(hits) == 0 {
-		lines = append(lines, th.muted.Render(padRight(" No matches", w)))
+		lines = append(lines, th.muted.Render(padRight(" No matches. Keep typing, or press tab to search all lists.", w)))
 	}
 	for i := off; i < len(hits) && i < off+n; i++ {
 		e := model.FocusEntry{Task: hits[i].Task, Crumb: hits[i].Crumb}

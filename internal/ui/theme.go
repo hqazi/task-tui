@@ -22,11 +22,11 @@ var (
 
 // icons holds the glyphs used in the UI.
 type icons struct {
-	Open, Done, Star, Collapsed, Expanded, Ellipsis string
+	Open, Done, Star, Collapsed, Expanded, Sep, Ellipsis string
 }
 
-var unicodeIcons = icons{"○", "✓", "★", "▸", "▾", "…"}
-var asciiIcons = icons{"o", "x", "*", ">", "v", "~"}
+var unicodeIcons = icons{"○", "✓", "★", "▸", "▾", "›", "…"}
+var asciiIcons = icons{"[ ]", "[x]", "*", ">", "v", ">", "~"}
 
 // theme bundles every Lip Gloss style used by the UI.
 type theme struct {
@@ -50,8 +50,12 @@ func newTheme(ascii bool) theme {
 	if ascii {
 		t.icons = asciiIcons
 	}
+	bd := lipgloss.RoundedBorder()
+	if ascii {
+		bd = lipgloss.NormalBorder()
+	}
 	border := func(c lipgloss.Color) lipgloss.Style {
-		return lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).BorderForeground(c)
+		return lipgloss.NewStyle().Border(bd).BorderForeground(c)
 	}
 	t.paneActive = border(colMauve)
 	t.paneIdle = border(colSurface)
@@ -72,8 +76,12 @@ func newTheme(ascii bool) theme {
 	t.hint = lipgloss.NewStyle().Foreground(colOverlay)
 	t.hintKey = lipgloss.NewStyle().Foreground(colBlue)
 	t.err = lipgloss.NewStyle().Foreground(colRed)
-	t.overlay = lipgloss.NewStyle().Border(lipgloss.RoundedBorder()).BorderForeground(colBlue).Padding(1, 2)
+	t.overlay = lipgloss.NewStyle().Border(bd).BorderForeground(colBlue).Padding(1, 2)
 	return t
 }
 
-func asciiFromEnv() bool { return os.Getenv("TASK_TUI_ASCII") != "" }
+// asciiFromEnv reports whether TASK_TUI_ASCII asks for the ASCII fallback.
+func asciiFromEnv() bool {
+	v := os.Getenv("TASK_TUI_ASCII")
+	return v != "" && v != "0" && v != "false"
+}

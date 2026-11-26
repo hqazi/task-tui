@@ -52,7 +52,7 @@ func (m Model) renderHintBar() string {
 		return m.renderInputBar()
 	}
 	if m.status != "" {
-		return m.theme.err.Render(ansi.Truncate(" "+m.status, m.w, "…"))
+		return m.theme.err.Render(ansi.Truncate(" "+m.status, m.w, m.theme.icons.Ellipsis))
 	}
 	var parts []string
 	for _, b := range m.hintBindings() {
@@ -60,22 +60,98 @@ func (m Model) renderHintBar() string {
 		parts = append(parts, m.theme.hintKey.Render(h.Key)+" "+m.theme.hint.Render(h.Desc))
 	}
 	sep := m.theme.hint.Render(" · ")
-	return ansi.Truncate(" "+strings.Join(parts, sep), m.w, "…")
+	return ansi.Truncate(" "+strings.Join(parts, sep), m.w, m.theme.icons.Ellipsis)
 }
 
+// helpBlock renders one help group as lines of exactly cw cells.
+func (m Model) helpBlock(g helpGroup, keyW, cw int) []string {
+	lines := []string{padRight(m.theme.rowDim.Render(g.Title), cw)}
+	for _, bind := range g.Bindings {
+		h := bind.Help()
+		line := "  " + m.theme.hintKey.Render(padRight(h.Key, keyW+1)) + m.theme.row.Render(h.Desc)
+		lines = append(lines, padRight(ansi.Truncate(line, cw, ""), cw))
+	}
+	return lines
+}
+
+// renderHelp draws the ? overlay. Groups flow into as few columns as needed to
+// fit the terminal height; anything that still does not fit is clipped.
 func (m Model) renderHelp() string {
-	var b strings.Builder
-	b.WriteString(m.theme.title.Render("Keys") + "\n")
+	keyW, descW := 0, 0
 	for _, g := range m.helpGroups() {
-		b.WriteString("\n" + m.theme.rowDim.Render(g.Title) + "\n")
-		for _, bind := range g.Bindings {
-			h := bind.Help()
-			b.WriteString("  " + m.theme.hintKey.Render(padRight(h.Key, 8)) + m.theme.row.Render(h.Desc) + "\n")
+		for _, b := range g.Bindings {
+			h := b.Help()
+			keyW = max(keyW, lipgloss.Width(h.Key))
+			descW = max(descW, lipgloss.Width(h.Desc))
 		}
 	}
-	b.WriteString("\n" + m.theme.hint.Render("any key to close"))
-	box := m.theme.overlay.Render(b.String())
+	const gap = 3
+	cw := 2 + keyW + 1 + descW
+	// Overlay chrome: border 2 + side padding 4 horizontally; border 2 plus
+	// title, blank, blank and footer vertically.
+	availW := max(m.w-6, 1)
+	availH := max(m.h-6, 1)
+	maxCols := max((availW+gap)/(cw+gap), 1)
+	groups := m.helpGroups()
+
+	var cols [][]string
+	for k := 1; k <= maxCols; k++ {
+		cols = m.helpColumns(groups, k, keyW, cw)
+		if k == maxCols || len(cols[0]) <= availH && tallest(cols) <= availH {
+			break
+		}
+	}
+	if len(cols) == 1 {
+		cw = min(cw, availW)
+	}
+	var blocks []string
+	for i, c := range cols {
+		if len(c) > availH {
+			c = append(c[:availH-1:availH-1], padRight(m.theme.muted.Render("  …"), cw))
+		}
+		st := lipgloss.NewStyle().Width(cw)
+		if i < len(cols)-1 {
+			st = st.MarginRight(gap)
+		}
+		blocks = append(blocks, st.Render(strings.Join(c, "\n")))
+	}
+	body := lipgloss.JoinHorizontal(lipgloss.Top, blocks...)
+	content := m.theme.title.Render("Keys") + "\n\n" + body + "\n\n" + m.theme.hint.Render("any key to close")
+	box := m.theme.overlay.Padding(0, 2).MaxWidth(max(m.w, 1)).Render(content)
 	return lipgloss.Place(m.w, m.h, lipgloss.Center, lipgloss.Center, box)
+}
+
+func tallest(cols [][]string) int {
+	n := 0
+	for _, c := range cols {
+		n = max(n, len(c))
+	}
+	return n
+}
+
+// helpColumns flows groups into k columns of roughly equal height.
+func (m Model) helpColumns(groups []helpGroup, k, keyW, cw int) [][]string {
+	var blocks [][]string
+	total := 0
+	for _, g := range groups {
+		b := m.helpBlock(g, keyW, cw)
+		blocks = append(blocks, b)
+		total += len(b) + 1
+	}
+	target := (total + k - 1) / k
+	cols := make([][]string, 1, k)
+	for _, b := range blocks {
+		cur := len(cols) - 1
+		if len(cols[cur]) > 0 && len(cols[cur])+len(b) > target && len(cols) < k {
+			cols = append(cols, nil)
+			cur++
+		}
+		if len(cols[cur]) > 0 {
+			cols[cur] = append(cols[cur], padRight("", cw))
+		}
+		cols[cur] = append(cols[cur], b...)
+	}
+	return cols
 }
 
 func padRight(s string, n int) string {

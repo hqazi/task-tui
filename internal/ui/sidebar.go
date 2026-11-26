@@ -141,7 +141,10 @@ func (m Model) renderSidebar(w, h int) string {
 		lines = append(lines, m.renderSidebarItem(items[i], i == sel, inner))
 	}
 	if len(m.store.Lists) == 0 {
-		lines = append(lines, "", m.theme.muted.Render(" press n to create a list"))
+		lines = append(lines, "")
+		for _, l := range []string{" No lists yet.", " Press n to", " create one."} {
+			lines = append(lines, m.theme.muted.Render(ansi.Truncate(l, inner, m.theme.icons.Ellipsis)))
+		}
 	}
 	return box.Width(inner).Height(max(h-2, 1)).MaxHeight(h).Render(strings.Join(lines, "\n"))
 }

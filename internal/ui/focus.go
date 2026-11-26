@@ -192,7 +192,7 @@ func (m Model) renderFocusRow(e model.FocusEntry, highlight, cursor bool, w int)
 	prefix := m.focusPrefix(e.Task)
 	const sep = " · "
 	avail := max(w-lipgloss.Width(prefix)-1, 0)
-	body, crumb := e.Task.Text, e.Crumb
+	body, crumb := e.Task.Text, strings.ReplaceAll(e.Crumb, "›", th.icons.Sep)
 	tw, cw, sw := lipgloss.Width(body), lipgloss.Width(crumb), lipgloss.Width(sep)
 	switch {
 	case tw+sw+cw <= avail:

@@ -8,11 +8,13 @@
 package ui
 
 import (
+	"strings"
 	"time"
 
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/hqazi/task-tui/internal/model"
 )
@@ -253,6 +255,25 @@ func (m Model) View() string {
 	if m.w < 1 || m.h < 1 {
 		return ""
 	}
+	return m.clamp(m.view())
+}
+
+// clamp trims a rendered screen to the terminal size, so a tiny window never
+// produces output that wraps or scrolls.
+func (m Model) clamp(s string) string {
+	lines := strings.Split(s, "\n")
+	if len(lines) > m.h {
+		lines = lines[:m.h]
+	}
+	for i, l := range lines {
+		if lipgloss.Width(l) > m.w {
+			lines[i] = ansi.Truncate(l, m.w, "")
+		}
+	}
+	return strings.Join(lines, "\n")
+}
+
+func (m Model) view() string {
 	switch m.mode {
 	case modeHelp:
 		return m.renderHelp()

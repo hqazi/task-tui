@@ -108,7 +108,7 @@ func TestDeleteAllShowsEmptyState(t *testing.T) {
 		f.m.sideSel = "list:" + f.m.store.Lists[0].ID
 		f.keys("d", "y")
 	}
-	if f.side() != "focus" || !strings.Contains(f.m.View(), "press n to create") {
+	if f.side() != "focus" || !strings.Contains(f.m.View(), "No lists yet") {
 		t.Fatalf("sel %q\n%s", f.side(), f.m.View())
 	}
 }

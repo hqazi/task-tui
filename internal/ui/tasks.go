@@ -132,7 +132,7 @@ func (m Model) renderTasks(w, h int) string {
 			if m.mode == modeInput && m.input.at.inline {
 				lines = append(lines, m.renderInputRow(m.newRowPrefix(0), inner))
 			} else {
-				lines = append(lines, "", m.theme.muted.Render(" No tasks"))
+				lines = append(lines, "", m.theme.muted.Render(ansi.Truncate(m.emptyListMessage(), inner, m.theme.icons.Ellipsis)))
 			}
 			break
 		}
@@ -268,4 +268,12 @@ func (m Model) insertInputAfter(rows []model.Row, i int) bool {
 		return i == end
 	}
 	return i == len(rows)-1
+}
+
+// emptyListMessage explains why the current list shows no rows.
+func (m Model) emptyListMessage() string {
+	if l := m.currentList(); l != nil && len(l.Tasks) > 0 && m.hideDone[l.ID] {
+		return " Everything here is done. Press h to show completed tasks."
+	}
+	return " No tasks yet. Press a to add one."
 }
