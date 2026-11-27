@@ -59,7 +59,7 @@ func TestListRename(t *testing.T) {
 
 func TestListDelete(t *testing.T) {
 	f, ids := newFixture(t)
-	f.keys("d")
+	f.keys("D")
 	if f.m.mode != modeConfirm || !strings.Contains(f.m.confirm.message, "Work") || !strings.Contains(f.m.confirm.message, "7 tasks") {
 		t.Fatalf("confirm %q", f.m.confirm.message)
 	}
@@ -67,12 +67,12 @@ func TestListDelete(t *testing.T) {
 	if len(f.m.store.Lists) != 4 {
 		t.Fatal("deleted on no")
 	}
-	f.keys("d", "y")
+	f.keys("D", "y")
 	if names(f) != "Home,Old,Ideas" || f.side() != "list:"+ids["home"] {
 		t.Fatalf("%s sel=%q", names(f), f.side())
 	}
 	// last visible list: selection goes to previous item
-	f.keys("d", "y")
+	f.keys("D", "y")
 	if f.side() != "focus" {
 		t.Fatalf("sel %q", f.side())
 	}
@@ -80,7 +80,7 @@ func TestListDelete(t *testing.T) {
 
 func TestDeleteSelectsPrevious(t *testing.T) {
 	f, ids := newFixture(t)
-	f.keys("down", "d", "y")
+	f.keys("down", "D", "y")
 	if f.side() != "list:"+ids["work"] {
 		t.Fatalf("sel %q", f.side())
 	}
@@ -90,11 +90,11 @@ func TestDeleteHiddenLists(t *testing.T) {
 	f, ids := newFixture(t)
 	f.m.hiddenOpen = true
 	f.m.sideSel = "list:" + ids["old"]
-	f.keys("d", "y")
+	f.keys("D", "y")
 	if f.side() != "list:"+ids["ideas"] {
 		t.Fatalf("sel %q", f.side())
 	}
-	f.keys("d", "y")
+	f.keys("D", "y")
 	if f.side() != "list:"+ids["home"] {
 		t.Fatalf("sel %q", f.side())
 	}
@@ -106,7 +106,7 @@ func TestDeleteAllShowsEmptyState(t *testing.T) {
 		f.m.sideSel = f.m.sidebarItems()[1].key
 		f.m.hiddenOpen = true
 		f.m.sideSel = "list:" + f.m.store.Lists[0].ID
-		f.keys("d", "y")
+		f.keys("D", "y")
 	}
 	if f.side() != "focus" || !strings.Contains(f.m.View(), "No lists yet") {
 		t.Fatalf("sel %q\n%s", f.side(), f.m.View())
@@ -167,7 +167,7 @@ func TestListHide(t *testing.T) {
 		t.Fatalf("sel should follow, got %q", f.side())
 	}
 	f.m.sideSel = keyHidden
-	f.keys("v", "r", "d")
+	f.keys("v", "r", "D")
 	if f.m.mode != modeNormal {
 		t.Fatal("keys on toggle row should be ignored")
 	}

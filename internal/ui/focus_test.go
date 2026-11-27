@@ -97,7 +97,7 @@ func TestFocusDoneActsOnRealTask(t *testing.T) {
 	f, ids := newFixture(t)
 	f.star(ids["reply"])
 	f.openFocus()
-	f.keys("space")
+	f.keys("d")
 	if tk := f.m.store.List(ids["work"]).Tasks[2]; !tk.Done {
 		t.Fatal("real task not done")
 	}
@@ -132,7 +132,7 @@ func TestFocusDelete(t *testing.T) {
 	f, ids := newFixture(t)
 	f.star(ids["reply"], ids["ship"], ids["tag"])
 	f.openFocus()
-	f.keys("down", "d") // Ship v2 has children
+	f.keys("down", "D") // Ship v2 has children
 	if f.m.mode != modeConfirm {
 		t.Fatal("expected confirm")
 	}
@@ -140,7 +140,7 @@ func TestFocusDelete(t *testing.T) {
 	if f.m.store.List(ids["work"]).Tasks[0].ID != ids["ship"] {
 		t.Fatal("deleted despite cancel")
 	}
-	f.keys("d", "y")
+	f.keys("D", "y")
 	if _, err := f.m.store.FindTask(ids["ship"]); err == nil {
 		t.Fatal("ship not deleted")
 	}
@@ -148,7 +148,7 @@ func TestFocusDelete(t *testing.T) {
 	if es := f.m.store.FocusTasks(f.m.now()); len(es) != 1 || f.m.focusSel != ids["reply"] {
 		t.Fatalf("entries %d sel %q", len(es), f.m.focusSel)
 	}
-	f.keys("d") // leaf: no confirm
+	f.keys("D") // leaf: no confirm
 	if f.m.mode != modeNormal {
 		t.Fatal("unexpected confirm")
 	}
@@ -211,7 +211,7 @@ func TestFocusEmptyStateAndEsc(t *testing.T) {
 	if !strings.Contains(f.m.View(), "No tasks for today — press f on any task to star it") {
 		t.Fatal("empty state missing")
 	}
-	f.keys("down", "space", "e", "d") // must not panic or change anything
+	f.keys("down", "space", "e", "D") // must not panic or change anything
 	f.keys("esc")
 	if f.m.pane != paneSidebar {
 		t.Fatal("esc did not return")

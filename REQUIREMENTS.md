@@ -24,7 +24,7 @@ A good-looking terminal task manager built around lists, nested tasks, and a dai
 │   Ideas  9 ││ ▸ ○ Refactor auth         0/3 │
 │            ││   ○ Reply to Sam              │
 └────────────┘└───────────────────────────────┘
- a add · s subtask · space done · f focus · m move · ? help
+ a add · s subtask · d done · f focus · m move · ? help
 ```
 - **Left sidebar** has Focus pinned at the top, then the user's lists. Each list shows its count of open tasks.
 - **Right pane** shows the tasks of the selected list, or of Focus.
@@ -34,7 +34,7 @@ A good-looking terminal task manager built around lists, nested tasks, and a dai
 
 ## 4. Lists
 - **Add** a list (`n` in the sidebar) and **rename** it (`r`).
-- **Delete** a list (`d`). This always asks for y/n confirmation.
+- **Delete** a list (`D`). This always asks for y/n confirmation.
 - **Reorder** lists (`Shift+↑/↓`).
 - **Hide/show** a list (`v`). Hidden lists are not deleted. They collapse into a "Hidden (n)" section at the bottom of the sidebar, which can be expanded to reach them.
 
@@ -46,8 +46,8 @@ A good-looking terminal task manager built around lists, nested tasks, and a dai
 | Add at end of list | `A` | |
 | Add subtask | `s` | Adds the new task as the last child of the selected task and expands the parent. |
 | Edit text | `e` / `Enter` | Inline edit. `Esc` cancels. |
-| Toggle complete | `Space` | |
-| Delete | `d` | Deletes immediately for a task with no subtasks, and asks y/n for a task that has subtasks. |
+| Toggle complete | `d` (or `Space`) | |
+| Delete | `D` | Deletes immediately for a task with no subtasks, and asks y/n for a task that has subtasks. |
 | Reorder | `Shift+↑/↓` | Moves the task, with its subtree, among its siblings. |
 | Indent / outdent | `Tab` / `Shift+Tab` | In the task pane only (`Esc` returns to the sidebar). Makes the task a child of the sibling above it, or of its grandparent. |
 | Collapse / expand | `←` / `→` | `←` on a child jumps to its parent. |

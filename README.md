@@ -83,7 +83,7 @@ The in-app help (`?`) lists the same bindings.
 | `tab`, `right`, `enter` | Open the selected list |
 | `n` | New list |
 | `r` | Rename list |
-| `d` | Delete list (always asks for confirmation) |
+| `D` | Delete list (always asks for confirmation) |
 | `shift+up` / `shift+down` | Move list up / down |
 | `v` | Hide or show list |
 | `enter` on "Hidden (n)" | Expand or collapse the hidden section |
@@ -103,8 +103,8 @@ The in-app help (`?`) lists the same bindings.
 | `A` | Add task at end of list |
 | `s` | Add subtask |
 | `e` / `enter` | Edit task |
-| `space` | Toggle done (also completes all subtasks) |
-| `d` | Delete task (asks if it has subtasks) |
+| `d` / `space` | Toggle done (also completes all subtasks) |
+| `D` | Delete task (asks if it has subtasks) |
 | `f` | Star or unstar for Focus |
 | `h` | Hide or show completed tasks |
 | `C` | Clear completed tasks (asks for confirmation) |
@@ -129,9 +129,9 @@ The in-app help (`?`) lists the same bindings.
 | `enter` / `g` | Jump to the task in its list |
 | `f` | Unstar |
 | `shift+up` / `shift+down` | Move task up / down in Focus |
-| `space` | Toggle done |
+| `d` / `space` | Toggle done |
 | `e` | Edit task |
-| `d` | Delete task |
+| `D` | Delete task |
 | `m` | Move to another list |
 | `/` | Search |
 | `esc` | Back to sidebar |

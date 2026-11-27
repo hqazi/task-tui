@@ -166,7 +166,7 @@ func TestEditCommitAndCancel(t *testing.T) {
 func TestToggleDoneAndHideDone(t *testing.T) {
 	f, ids := newFixture(t)
 	f.open(ids["ship"])
-	f.keys("space")
+	f.keys("d")
 	for _, id := range []string{"ship", "changelog", "tag"} {
 		x, _ := f.m.store.FindTask(ids[id])
 		if !x.Task.Done {
@@ -226,7 +226,7 @@ func TestToday(t *testing.T) {
 func TestDeleteLeafImmediate(t *testing.T) {
 	f, ids := newFixture(t)
 	f.open(ids["changelog"])
-	f.keys("d")
+	f.keys("D")
 	if f.m.mode != modeNormal {
 		t.Fatal("leaf delete must not confirm")
 	}
@@ -236,7 +236,7 @@ func TestDeleteLeafImmediate(t *testing.T) {
 	if f.task() != ids["tag"] {
 		t.Fatalf("cursor %q, want next task", f.task())
 	}
-	f.keys("d") // tag is last child; cursor falls to the next row (refactor)
+	f.keys("D") // tag is last child; cursor falls to the next row (refactor)
 	if f.task() != ids["refactor"] {
 		t.Fatalf("cursor %q", f.task())
 	}
@@ -246,7 +246,7 @@ func TestDeleteLeafImmediate(t *testing.T) {
 func TestDeleteLastRowMovesCursorUp(t *testing.T) {
 	f, ids := newFixture(t)
 	f.open(ids["reply"])
-	f.keys("d")
+	f.keys("D")
 	if f.task() != ids["deep"] {
 		t.Fatalf("cursor %q, want previous row", f.task())
 	}
@@ -255,7 +255,7 @@ func TestDeleteLastRowMovesCursorUp(t *testing.T) {
 func TestDeleteWithChildrenConfirm(t *testing.T) {
 	f, ids := newFixture(t)
 	f.open(ids["ship"])
-	f.keys("d")
+	f.keys("D")
 	if f.m.mode != modeConfirm {
 		t.Fatal("expected confirm")
 	}
@@ -270,11 +270,11 @@ func TestDeleteWithChildrenConfirm(t *testing.T) {
 	if _, err := f.m.store.FindTask(ids["ship"]); err != nil || f.saves != 0 || f.m.mode != modeNormal {
 		t.Fatal("n must keep the task")
 	}
-	f.keys("d", "esc")
+	f.keys("D", "esc")
 	if _, err := f.m.store.FindTask(ids["ship"]); err != nil || f.saves != 0 {
 		t.Fatal("esc must keep the task")
 	}
-	f.keys("d", "y")
+	f.keys("D", "y")
 	if _, err := f.m.store.FindTask(ids["ship"]); err == nil {
 		t.Fatal("y must delete")
 	}
@@ -352,11 +352,11 @@ func TestActionsIgnoredInSidebarAndFocus(t *testing.T) {
 	if f.m.mode != modeNormal || f.saves != 0 {
 		t.Fatal("sidebar must not run task actions")
 	}
-	f.keys("d", "n") // sidebar d is list delete; declined
+	f.keys("D", "n") // sidebar D is list delete; declined
 	if f.saves != 0 || len(f.m.store.Lists) != 4 {
 		t.Fatal("declined list delete mutated")
 	}
-	f.keys("up", "tab", "a", "d")
+	f.keys("up", "tab", "a", "D")
 	if f.m.mode != modeNormal || f.saves != 0 || f.m.store.List(ids["work"]) == nil {
 		t.Fatal("focus view has no actions yet")
 	}
