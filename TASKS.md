@@ -45,7 +45,7 @@ UI code calls `internal/model` operations, then saves through `store`. Model ope
 
 ## T3 — Task actions ✅
 - `a` adds below, `A` adds at the end, `s` adds a subtask; `e`/`Enter` edits (inline input, `Esc` cancels); `Space` toggles done; `d` deletes (confirms when the task has children).
-- `Shift+↑/↓` reorders, `Tab`/`Shift+Tab` indent/outdent (`Tab` switches panes only when not on a task row; if that's ambiguous, `Ctrl+←/→` can be an alternative), `t` toggles today, `h` hides/shows done, `C` clears done (with confirm).
+- `Shift+↑/↓` reorders, `Tab`/`Shift+Tab` indent/outdent (`Tab` switches panes only when not on a task row; if that's ambiguous, `Ctrl+←/→` can be an alternative), `f` toggles today, `h` hides/shows done, `C` clears done (with confirm).
 - The cursor follows the affected task after each operation.
 
 ## T4 — List management ✅
@@ -53,7 +53,7 @@ UI code calls `internal/model` operations, then saves through `store`. Model ope
 
 ## T5 — Focus view ✅
 - Selecting Focus shows starred tasks with breadcrumbs (`text · List › Parent`), and a header with the date and done/total.
-- `Shift+↑/↓` reorders the focus order; `Space`, `e`, `t` and `d` act on the real task; `Enter`/`g` jumps to the task in its home list (expanding its ancestors).
+- `Shift+↑/↓` reorders the focus order; `Space`, `e`, `f` and `d` act on the real task; `Enter`/`g` jumps to the task in its home list (expanding its ancestors).
 
 ## T6 — Move picker and search ✅
 - `m` opens a popup of lists (excluding the current one), `↑/↓` + `Enter` moves the task with its subtree, and `Esc` cancels. It works from Focus too.

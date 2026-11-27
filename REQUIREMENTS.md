@@ -24,7 +24,7 @@ A good-looking terminal task manager built around lists, nested tasks, and a dai
 │   Ideas  9 ││ ▸ ○ Refactor auth         0/3 │
 │            ││   ○ Reply to Sam              │
 └────────────┘└───────────────────────────────┘
- a add · s subtask · space done · t today · m move · ? help
+ a add · s subtask · space done · f focus · m move · ? help
 ```
 - **Left sidebar** has Focus pinned at the top, then the user's lists. Each list shows its count of open tasks.
 - **Right pane** shows the tasks of the selected list, or of Focus.
@@ -53,7 +53,7 @@ A good-looking terminal task manager built around lists, nested tasks, and a dai
 | Collapse / expand | `←` / `→` | `←` on a child jumps to its parent. |
 | Collapse all / expand all | `-` / `+` | |
 | Move to another list | `m` | Opens a picker popup of lists. The task moves with its subtree and is appended at the bottom of the target list. |
-| Star for Today | `t` | Toggle. |
+| Star for Today | `f` | Toggle. |
 | Hide/show done tasks | `h` | Per-list toggle (UI state, not saved). |
 | Clear done tasks | `C` | Asks y/n, then removes the done tasks in the current list. |
 | Search/filter | `/` | Fuzzy filter. `Tab` inside search switches between this list and all lists. `Esc` clears the filter. |

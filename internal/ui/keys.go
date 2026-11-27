@@ -58,13 +58,13 @@ func newKeyMap() keyMap {
 		MoveDown:  key.NewBinding(key.WithKeys("shift+down"), key.WithHelp("shift+↓", "move down")),
 		Indent:    key.NewBinding(key.WithKeys("tab"), key.WithHelp("tab", "indent")),
 		Outdent:   key.NewBinding(key.WithKeys("shift+tab"), key.WithHelp("shift+tab", "outdent")),
-		Today:     key.NewBinding(key.WithKeys("t"), key.WithHelp("t", "today")),
+		Today:     key.NewBinding(key.WithKeys("f"), key.WithHelp("f", "focus")),
 		HideDone:  key.NewBinding(key.WithKeys("h"), key.WithHelp("h", "hide done")),
 		ClearDone: key.NewBinding(key.WithKeys("C"), key.WithHelp("C", "clear done")),
 		Back:      key.NewBinding(key.WithKeys("esc"), key.WithHelp("esc", "sidebar")),
 
 		Jump:      key.NewBinding(key.WithKeys("enter", "g"), key.WithHelp("enter/g", "jump to list")),
-		Unstar:    key.NewBinding(key.WithKeys("t"), key.WithHelp("t", "unstar")),
+		Unstar:    key.NewBinding(key.WithKeys("f"), key.WithHelp("f", "unstar")),
 		FocusEdit: key.NewBinding(key.WithKeys("e"), key.WithHelp("e", "edit")),
 
 		Move:   key.NewBinding(key.WithKeys("m"), key.WithHelp("m", "move to list")),

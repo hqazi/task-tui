@@ -111,18 +111,18 @@ func TestFocusUnstarKeepsIndex(t *testing.T) {
 	f, ids := newFixture(t)
 	f.star(ids["changelog"], ids["tag"], ids["reply"])
 	f.openFocus()
-	f.keys("down", "t")
+	f.keys("down", "f")
 	if f.m.store.List(ids["work"]).Tasks[0].Children[1].Today {
 		t.Fatal("still starred")
 	}
 	if f.m.focusSel != ids["reply"] || f.m.focusLast != 1 {
 		t.Fatalf("sel %q last %d", f.m.focusSel, f.m.focusLast)
 	}
-	f.keys("t") // unstar last row: cursor clamps
+	f.keys("f") // unstar last row: cursor clamps
 	if f.m.focusSel != ids["changelog"] {
 		t.Fatalf("sel %q", f.m.focusSel)
 	}
-	f.keys("t")
+	f.keys("f")
 	if !strings.Contains(f.m.View(), "No tasks for today") {
 		t.Fatal("empty state missing")
 	}
@@ -208,7 +208,7 @@ func TestFocusJumpHiddenListAndEnter(t *testing.T) {
 func TestFocusEmptyStateAndEsc(t *testing.T) {
 	f, _ := newFixture(t)
 	f.openFocus()
-	if !strings.Contains(f.m.View(), "No tasks for today — press t on any task to star it") {
+	if !strings.Contains(f.m.View(), "No tasks for today — press f on any task to star it") {
 		t.Fatal("empty state missing")
 	}
 	f.keys("down", "space", "e", "d") // must not panic or change anything

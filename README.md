@@ -53,7 +53,7 @@ Press `?` at any time to see every key binding.
 
 ## Focus view
 
-Focus is a virtual list pinned to the top of the sidebar. It collects every task you star with `t`, from any list and at any depth (including hidden lists), and shows where each one lives.
+Focus is a virtual list pinned to the top of the sidebar. It collects every task you star with `f`, from any list and at any depth (including hidden lists), and shows where each one lives.
 
 ![The Focus view with tasks starred from several lists](docs/screenshots/focus.png)
 
@@ -105,7 +105,7 @@ The in-app help (`?`) lists the same bindings.
 | `e` / `enter` | Edit task |
 | `space` | Toggle done (also completes all subtasks) |
 | `d` | Delete task (asks if it has subtasks) |
-| `t` | Star or unstar for today |
+| `f` | Star or unstar for Focus |
 | `h` | Hide or show completed tasks |
 | `C` | Clear completed tasks (asks for confirmation) |
 | `m` | Move to another list |
@@ -127,7 +127,7 @@ The in-app help (`?`) lists the same bindings.
 |---|---|
 | `up` / `down` | Move selection |
 | `enter` / `g` | Jump to the task in its list |
-| `t` | Unstar |
+| `f` | Unstar |
 | `shift+up` / `shift+down` | Move task up / down in Focus |
 | `space` | Toggle done |
 | `e` | Edit task |

@@ -211,13 +211,13 @@ func TestHideDoneIsPerList(t *testing.T) {
 func TestToday(t *testing.T) {
 	f, ids := newFixture(t)
 	f.open(ids["reply"])
-	f.keys("t")
+	f.keys("f")
 	x, _ := f.m.store.FindTask(ids["reply"])
 	if !x.Task.Today || f.task() != ids["reply"] {
 		t.Fatal("not starred")
 	}
 	f.wantSaves(1)
-	f.keys("t")
+	f.keys("f")
 	if x, _ = f.m.store.FindTask(ids["reply"]); x.Task.Today {
 		t.Fatal("not unstarred")
 	}
@@ -389,7 +389,7 @@ func TestSaveFailureShown(t *testing.T) {
 	f, ids := newFixture(t)
 	f.m.saver = func(string, *model.Store) error { return errors.New("boom") }
 	f.open(ids["reply"])
-	f.keys("t")
+	f.keys("f")
 	if !strings.Contains(f.m.status, "boom") {
 		t.Fatalf("status %q", f.m.status)
 	}

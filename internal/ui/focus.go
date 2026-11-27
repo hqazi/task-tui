@@ -149,7 +149,7 @@ func (m Model) renderFocus(title lipgloss.Style, w, h int, active bool) []string
 	head := fmt.Sprintf(" FOCUS · %s · %d/%d", m.now().Format("Mon 2 Jan"), done, len(es))
 	lines := []string{title.Render(ansi.Truncate(head, w, m.theme.icons.Ellipsis))}
 	if len(es) == 0 {
-		return append(lines, "", m.theme.muted.Render(ansi.Truncate(" No tasks for today — press t on any task to star it", w, m.theme.icons.Ellipsis)))
+		return append(lines, "", m.theme.muted.Render(ansi.Truncate(" No tasks for today — press f on any task to star it", w, m.theme.icons.Ellipsis)))
 	}
 	sel := m.focusIndex(es)
 	n := m.bodyRows(h)
